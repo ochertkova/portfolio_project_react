@@ -8,6 +8,7 @@ import {
   FormLabel,
   Heading,
   Input,
+  propNames,
   Select,
   Textarea,
   VStack,
@@ -28,14 +29,28 @@ const LandingSection = () => {
       type: '',
       comment: ''
     },
-    onSubmit: (values) => { submit },
-    validationSchema: Yup.object.shape({
-      firstName: Yup.string().required(),
+    onSubmit: (values) => {
+      submit('', values) // Promise
+
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string().required("First name is required"),
       email: Yup.string().email("Invalid email address").required(),
       type: Yup.string(),
       comment: Yup.string().min(25, 'Must be at least 25 characters').required()
     }),
   });
+
+  useEffect(() => {
+    if (!isLoading && response !== null) {
+      const { type, message } = response
+      onOpen(type, message)
+      if (type === 'success') {
+        console.log('Success')
+        formik.resetForm()
+      }
+    }
+  }, [isLoading])
 
   return (
     <FullScreenSection
@@ -49,30 +64,35 @@ const LandingSection = () => {
           Contact me
         </Heading>
         <Box p={6} rounded="md" w="100%">
-          <form onSubmit={(e) => { e.preventDefault(); formik.handleSubmit(e) }}>
+          <form onSubmit={formik.handleSubmit}>
             <VStack spacing={4}>
-              <FormControl isInvalid={false}>
+              <FormControl isInvalid={formik.errors.firstName && formik.touched.firstName}>
                 <FormLabel htmlFor="firstName">Name</FormLabel>
                 <Input
                   id="firstName"
                   name="firstName"
                   {...formik.getFieldProps("firstName")}
+                  onChange={(e) => { e.preventDefault(); formik.handleChange(e) }}
                 />
-                <FormErrorMessage></FormErrorMessage>
+                <FormErrorMessage>{formik.errors.firstName}</FormErrorMessage>
+
               </FormControl>
-              <FormControl isInvalid={false}>
+              <FormControl isInvalid={formik.errors.email && formik.touched.email}>
                 <FormLabel htmlFor="email">Email Address</FormLabel>
                 <Input
                   id="email"
                   name="email"
                   type="email"
                   {...formik.getFieldProps("email")}
+                  onChange={(e) => { e.preventDefault(); formik.handleChange(e) }}
                 />
-                <FormErrorMessage></FormErrorMessage>
+                <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
               </FormControl>
-              <FormControl>
+
+              <FormControl isInvalid={formik.errors.type && formik.touched.type}>
                 <FormLabel htmlFor="type">Type of enquiry</FormLabel>
-                <Select id="type" name="type">
+                <Select id="type" name="type" onChange={(e) => { e.preventDefault(); formik.handleChange(e) }}
+                >
                   <option value="hireMe">Freelance project proposal</option>
                   <option value="openSource">
                     Open source consultancy session
@@ -81,14 +101,16 @@ const LandingSection = () => {
 
                 </Select>
               </FormControl>
-              <FormControl isInvalid={false}>
+              <FormControl isInvalid={formik.errors.comment && formik.touched.comment}>
                 <FormLabel htmlFor="comment">Your message</FormLabel>
                 <Textarea
                   id="comment"
                   name="comment"
                   height={250}
+                  onChange={(e) => { e.preventDefault(); formik.handleChange(e) }}
+
                 />
-                <FormErrorMessage></FormErrorMessage>
+                <FormErrorMessage>{formik.errors.comment}</FormErrorMessage>
               </FormControl>
               <Button type="submit" colorScheme="purple" width="full">
                 Submit
@@ -97,7 +119,7 @@ const LandingSection = () => {
           </form>
         </Box>
       </VStack>
-    </FullScreenSection>
+    </FullScreenSection >
   );
 };
 
