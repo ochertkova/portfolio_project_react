@@ -31,24 +31,22 @@ const LandingSection = () => {
     },
     onSubmit: (values) => {
       submit('', values) // Promise
-
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("First name is required"),
-      email: Yup.string().email("Invalid email address").required(),
+      email: Yup.string().email("Invalid email address").required("Email is required"),
       type: Yup.string(),
-      comment: Yup.string().min(25, 'Must be at least 25 characters').required()
+      comment: Yup.string().min(25, 'Must be at least 25 characters').required('Comment is required')
     }),
   });
 
   useEffect(() => {
     if (!isLoading && response !== null) {
       const { type, message } = response
-      onOpen(type, message)
       if (type === 'success') {
-        console.log('Success')
-        formik.resetForm()
+        formik.resetForm({})
       }
+      onOpen(type, message)
     }
   }, [isLoading])
 
@@ -91,13 +89,17 @@ const LandingSection = () => {
 
               <FormControl isInvalid={formik.errors.type && formik.touched.type}>
                 <FormLabel htmlFor="type">Type of enquiry</FormLabel>
-                <Select id="type" name="type" onChange={(e) => { e.preventDefault(); formik.handleChange(e) }}
+                <Select
+                  id="type"
+                  name="type"
+                  {...formik.getFieldProps("type")}
+                  onChange={(e) => { e.preventDefault(); formik.handleChange(e) }}
                 >
-                  <option value="hireMe">Freelance project proposal</option>
-                  <option value="openSource">
+                  <option value="hireMe" label="Freelance project proposal" >Freelance project proposal</option>
+                  <option value="openSource" label="Open source consultancy session"  >
                     Open source consultancy session
                   </option>
-                  <option value="other">Other</option>
+                  <option value="other" label="Other">Other</option>
 
                 </Select>
               </FormControl>
@@ -106,9 +108,9 @@ const LandingSection = () => {
                 <Textarea
                   id="comment"
                   name="comment"
+                  {...formik.getFieldProps("comment")}
                   height={250}
                   onChange={(e) => { e.preventDefault(); formik.handleChange(e) }}
-
                 />
                 <FormErrorMessage>{formik.errors.comment}</FormErrorMessage>
               </FormControl>
