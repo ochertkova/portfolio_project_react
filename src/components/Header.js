@@ -11,31 +11,40 @@ import { Box, HStack } from "@chakra-ui/react";
 
 const socials = [
   {
+    key: 1,
     icon: faEnvelope,
     url: "mailto: hello@example.com",
   },
   {
+    key: 2,
     icon: faGithub,
     url: "https://github.com",
   },
   {
+    key: 3,
     icon: faLinkedin,
     url: "https://www.linkedin.com",
   },
   {
+    key: 4,
     icon: faMedium,
     url: "https://medium.com",
   },
   {
+    key: 5,
     icon: faStackOverflow,
     url: "https://stackoverflow.com",
   },
 ];
 
 const Header = () => {
+  const hideNav = false;
+
   const handleClick = (anchor) => {
     const id = `${anchor}-section`;
     const element = document.getElementById(id);
+
+
     if (element) {
       element.scrollIntoView({
         behavior: "smooth",
@@ -55,6 +64,7 @@ const Header = () => {
       transitionDuration=".3s"
       transitionTimingFunction="ease-in-out"
       backgroundColor="#18181b"
+      className={hideNav ? 'nav-hidden' : 'nav-active'}
     >
       <Box color="white" maxWidth="1280px" margin="0 auto">
         <HStack
@@ -66,7 +76,7 @@ const Header = () => {
           <nav>
             <HStack spacing={5}>
               {socials.map(socials => (
-                <a href={socials.url}>
+                <a href={socials.url} key={`key${socials.key}`} >
                   <FontAwesomeIcon icon={socials.icon} size="2x" />
                 </a>
               ))

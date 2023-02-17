@@ -15,3 +15,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.nav-active {
+  transform: translateY(0);
+}
+.nav-hidden {
+  transform: translateY(-200px);
+}
