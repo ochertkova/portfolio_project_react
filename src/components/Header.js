@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -37,8 +37,32 @@ const socials = [
   },
 ];
 
+
 const Header = () => {
-  const hideNav = false;
+  const [direction, setDirection] = useState('');
+
+  useEffect(() => {
+    let previousY = -1;
+    const handleScroll = (e) => {
+      const currentY = window.scrollY;
+      let newDir;
+      if (currentY > previousY) {
+        newDir = 'down';
+      } else {
+        newDir = 'up';
+      }
+      setDirection(newDir)
+      previousY = currentY;
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+
+  const hideNav = direction === 'up';
 
   const handleClick = (anchor) => {
     const id = `${anchor}-section`;
