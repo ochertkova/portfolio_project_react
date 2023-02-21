@@ -62,7 +62,7 @@ const Header = () => {
   }, []);
 
 
-  const hideNav = direction === 'up';
+  const hideNav = direction === 'down' && window.scrollY > 0;
 
   const handleClick = (anchor) => {
     const id = `${anchor}-section`;
